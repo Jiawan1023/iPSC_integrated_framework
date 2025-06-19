@@ -4,3 +4,4 @@ Figure_code folder contains codes to generate plots for the figures in the paper
 3. barplot.R for Figure 3, Figure 4, Figure 6, Figure 5, Suppfig 8 and Suppfig 10.
 4. volcanoplot.R for suppfig 1c, suppfig 2a and suppfig 7d.
 5. upsetplot.R for Figure 4 (b).
+6. waterfallplot.R for Figure 4 (g), Suppfig 1 (f) and Suppfig 6(c). 
