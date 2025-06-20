@@ -9,9 +9,9 @@
 #SBATCH --cpus-per-task=20
 #SBATCH --time=400:0:0
 #SBATCH --mem-per-cpu=20G
-#SBATCH --chdir /data6/johnathan/RNA_seq/ # TODO: set dir to cache dir
-#SBATCH -o /data6/johnathan/RNA_seq/slurm/logs/out_trim_ipsc_npc_%a.log # TODO: set slurm output file
-#SBATCH -e /data6/johnathan/RNA_seq/slurm/logs/err_trim_ipsc_npc%a.log # TODO: set slurm input file
+#SBATCH --chdir  # TODO: set dir to cache dir
+#SBATCH -o # TODO: set slurm output file
+#SBATCH -e  # TODO: set slurm input file
 #SBATCH --exclude=sarah
 #SBATCH --exclude=laila
 #SBATCH --array 1-6
@@ -22,7 +22,7 @@ source /opt/anaconda/bin/activate #path, activate environment
 
 echo $HOSTNAME
 
-FILE=$(sed -n "$SLURM_ARRAY_TASK_ID"p #path_for_log_files)
+FILE=$(sed -n "$SLURM_ARRAY_TASK_ID"p #path)
 
 MATE1="/path_for_fastq/${FILE}_R1_001.fastq.gz" #make a file for MATE1 and MATE2
 MATE2="/path_for_fastq/${FILE}_R2_001.fastq.gz"
