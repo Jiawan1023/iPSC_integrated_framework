@@ -19,7 +19,6 @@ colnames(DEG_3)[8]<-"genename"
 
 DEG_3<-genelist %>%
   inner_join(DEG_3,by='genename') %>% 
-  ## select配合everything排序把，改变变量顺序
   dplyr::select(ENTREZID,log2FoldChange,everything())
 head(DEG_3)
 
@@ -46,11 +45,11 @@ write.csv(em,file = "npc_3110_uqcrc2_versus_ev_controls_GSEA_reactome.csv",row.n
 m_t2g <- msigdbr(species = "Homo sapiens", category = "C2", subcategory = "CP:WIKIPATHWAYS") %>% 
   dplyr::select(gs_name, entrez_gene)
 
-em_1 <- GSEA(geneList,nPerm = 10000 ,TERM2GENE = m_t2g,pvalueCutoff = 0.1,verbose = FALSE)
+em_1 <- GSEA(geneList,nPerm = 10000 ,TERM2GENE = m_t2g,verbose = FALSE)
 write.csv(em_1,file = "npc_3110_uqcrc2_versus_ev_controls_GSEA_wikipathway.csv",row.names = T)
 
 m_t2g <- msigdbr(species = "Homo sapiens", category = "C2") %>% 
   dplyr::select(gs_name, entrez_gene)
 
-em <- GSEA(geneList,nPerm = 10000 ,TERM2GENE = m_t2g,pvalueCutoff = 0.1,verbose = FALSE)
+em <- GSEA(geneList,nPerm = 10000 ,TERM2GENE = m_t2g,verbose = FALSE)
 write.csv(em,file = "npc_3110_uqcrc2_versus_ev_controls_GSEA.csv",row.names = T)
