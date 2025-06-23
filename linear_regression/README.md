@@ -1,3 +1,4 @@
-scripts for linear regression analysis in Figure 7.
+Scripts for linear regression analysis in Figure 7.
 
-input tables and data are in Supplementary table 10.
+
+Input tables and data are in Supplementary table 10.
