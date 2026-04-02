@@ -30,9 +30,9 @@ violinplot.R for Figure 3, Suppfig 5, Suppfig 6.
 
 Scripts for enrichment analysis in the paper.
 
-Enrichment_disgenet.R for Suppfig 3(b) and Suppfig 4(b).
+Enrichment_disgenet.R for Suppfig 3(b) and Suppfig 4(b,d).
 
-Enrichment_in_published_datases.R for Suppfig 1(e) and Suppfig 3(b,d).
+Enrichment_in_published_datases.R for Suppfig 3(a) and Suppfig 4(a,c).
 
 GSEA.R for gene-set enrichment analysis in the paper. 
 
