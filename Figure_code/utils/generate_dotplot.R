@@ -1,4 +1,4 @@
-#Figure 1e
+#Figure 2d and Supplementary Figure 3d
 # Load necessary libraries
 library(tidyverse)
 library(ggplot2)
@@ -35,12 +35,12 @@ g <- ggplot(plot_data, aes(x = Group, y = Expression, color = Group)) +
 print(g)
 
 #-------------------------------------------------------------
-#fig 2b.c and suppfig 3c
+#fig 2d and suppfig 4e
 library(ggplot2)
 library(dplyr)
 
 #input dataframe with tpm, condition_1 (del or nondel) and condition_2 (hit or nonhit).
-#detailed information is provided in supplementary table 4
+#detailed information is provided in supplementary table 5
 summary_data <- data %>%
   group_by(condition_1, condition_2) %>%
   summarise(
@@ -76,12 +76,12 @@ ggplot(data, aes(x = factor(condition_2, levels = c("nonhit", "hit")), y = tpm, 
 
 
 #------------------------------------------------------
-#suppfig 1e, supplig 3b
+#suppfig 3a-b, supplig 4a-d
 
 # input compariosn name with desired order as ordered_comparison
 #input publish dataset names as ordered_study_names
 
-#input summary in Supplementary table S9F and Supplementary table S9G as df
+#input summary in Supplementary table S4E and Supplementary table S4Fas df
 
 df$test_file <- factor(df$test_file, levels = ordered_comparison)
 df$reference_file   <- factor(df$reference_file, levels = ordered_study_names)
@@ -171,14 +171,15 @@ output_file <- "CRISPR_disgenet_bubble_plot.pdf"  # Define the output file name
 ggsave(output_file, plot = bubble_plot, width = 6, height = 6, units = "in")
 
 #---------------------------------------------------------------
-#suppfig 8d and suppfig 11a
-#input go data supplementary table 5 S5E and supplemntary table 8 S8F Select the representatoive ones
+#Figure 2b and suppfig 7b and Suppfig 9d
+#input pathways can be found in supplementary tables as labeled in the paper
 go_data$qvalue <- as.numeric(go_data$qvalue)
 go_data$neg_log10_qvalue <- -log10(go_data$qvalue)
 
 
 go_data$line <- factor(go_data$line, levels = c("111_mosmo", "111_polr3e", "111_uqcrc2", "3110_polr3e", "3110_uqcrc2", "414_mosmo", "414_polr3e", "414_uqcrc2"))
 
+#111 is P1C_077, 3110 is P2C_079, 414 is P1C_007
 go_data$database_Description <- paste(go_data$database, go_data$Description, sep = "_")
 
 
@@ -199,16 +200,110 @@ ggplot(go_data, aes(x = line, y = database_Description, size = Count, fill = neg
         legend.position = "right"
     )
 
+  #-----------------------------------
+#bubble plot for GSEA in Figure3 and Supplementary Figure 7
+
+
+  suppressPackageStartupMessages({
+  library(dplyr)
+  library(ggplot2)
+  library(forcats)
+})
+
+# load data
+cell_order <- c("ipsc","npc","imn","mn")
+df <- read.csv("~/Dropbox/iPSC_paper_Reviews/analysis/GSEA_pathway_across_stages/GSEA_summary_across_stages.csv")
+#replace path
+df2 <- df %>%
+  mutate(
+    cell_type = factor(cell_type, levels = cell_order),
+    comparison = factor(as.character(comparison), levels = sort(unique(as.character(comparison)))),
+    NES_abs  = abs(NES),
+    NES_sign = ifelse(NES > 0, "Positive", "Negative"),
+    q_log10  = -log10(pmax(qvalue, 1e-300))
+  )
+
+# --- Plot-----------
+p <- ggplot(
+  df2,
+  aes(x = cell_type, y = Description, size = q_log10, fill = NES)
+) +
+  geom_point(shape = 21, color = "black", alpha = 0.9) +
+  scale_size_continuous(name = expression(-log[10](qvalue)), range = c(2.5, 11)) +
+  scale_fill_gradient2(
+    low = "#2c7bb6", mid = "white", high = "#d7191c",
+    midpoint = 0, name = "NES"
+  ) +
+  # force all four x categories to appear in every facet
+  scale_x_discrete(limits = cell_order, drop = FALSE) +
+  facet_grid(~ comparison, scales = "fixed", space = "free_x") +  # use "fixed" to guarantee all x levels
+  labs(
+    x = "Cell type",
+    y = "Pathway",
+    title = "Enrichment Bubble Plot (Grouped by Comparison)"
+  ) +
+  theme_bw(base_size = 13) +
+  theme(
+    strip.background = element_rect(fill = "gray92"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.minor = element_blank()
+  )
+
+print(p)
+
+ggsave("bubble_plot_GSEA_family.pdf", p, width = 17, height = 11)
 
 
 
 
 
+# load data
+cell_order <- c("ipsc","npc","imn","mn")
+df <- read.csv("~/Dropbox/iPSC_paper_Reviews/analysis/GSEA_pathway_across_stages/GSEA_summary_across_stages.csv")
+#replace path
+df2 <- df %>%
+  mutate(
+    cell_type = factor(cell_type, levels = cell_order),
+    comparison = as.character(comparison),
+    NES_abs  = abs(NES),
+    NES_sign = ifelse(NES > 0, "Positive", "Negative"),
+    q_log10  = -log10(pmax(qvalue, 1e-300))  # size by -log10(q)
+  )
 
+# --- Build full comparison axis inside each cell type ---
+all_comparisons <- sort(unique(df2$comparison))
 
+df2 <- df2 %>%
+  mutate(
+    comparison = factor(comparison, levels = all_comparisons)
+  )
 
+# --- Plot with x-axis grouped by cell_type ---
+p <- ggplot(
+  df2,
+  aes(x = comparison, y = Description, size = q_log10, fill = NES)
+) +
+  geom_point(shape = 21, color = "black", alpha = 0.9) +
+  scale_size_continuous(name = expression(-log[10](qvalue)), range = c(2.5, 11)) +
+  scale_fill_gradient2(
+    low = "#2c7bb6", mid = "white", high = "#d7191c",
+    midpoint = 0, name = "NES"
+  ) +
+  facet_grid(~ cell_type, scales = "free_x", space = "free_x") +
+  labs(
+    x = "Comparison",
+    y = "Pathway",
+    title = "Enrichment Bubble Plot (Grouped by Cell Type)"
+  ) +
+  theme_bw(base_size = 13) +
+  theme(
+    strip.background = element_rect(fill = "gray92"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.minor = element_blank()
+  )
 
+print(p)
 
-
+ggsave("bubble_plot_GSEA_stage.pdf", p, width = 14, height = 11)
 
 
