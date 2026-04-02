@@ -76,7 +76,7 @@ call_SNV for calling, filtering and annotation SNVs.
 
 call_STR for calling, filtering and annotation STRs.
 
-Fisher_exact_test for overlap analysis between WGS variants and DEGs or Diffpeaks.
+Fisher_exact_test.py for Example code of Fisher's exact tests.
 
 Gene_interaction_analysis for finding variants and genes with additional changes in gene expression and chromatin accessibility in families.
 
