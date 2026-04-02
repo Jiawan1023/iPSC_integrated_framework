@@ -1,75 +1,116 @@
+
 #Figure 1c
-# input supplementary table S2J as df
-
+#raw data from Supplementary Table S3G and S3H
+library(ComplexHeatmap)
 library(ggplot2)
-df$Odds_ratio[is.infinite(df$Odds_ratio)] <- NA
+
+#input raw data as df
+
+mat <- matrix(-log10(df$P.value), ncol = 1)
+colnames(mat) <- "Motif Name"
 
 
-df$Cell_type <- factor(df$Cell_type, levels = c("ipsc", "npc", "imn", "mn"))
-df$Variant <- factor (df$Variant, levels = rev(c("snv_coding", "snv_noncoding", "STR_coding", "STR_noncoding", "deletion_coding", "deletion_noncoding", "duplication_coding", "duplication_noncoding")))
 
-
-# Plot 
-p <- ggplot(df, aes(x = Cell_type, y = Variant, fill = Odds_ratio)) +
-    geom_tile(color = "black", size = 0.5) +  # Adds thicker black borders to the tiles
-    scale_fill_gradient2(low = "navy", mid = "white", high = "darkred", midpoint = 1, limits = c(0, 6), na.value = "red4") +
-    labs(x = "Cell Type", y = "Variant", fill = "Odds Ratio") +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-#input supplementary table S2K as df
-df$cell_type <- factor(df$cell_type, levels = c("ipsc", "npc", "imn", "mn"))
-
-df$Variant <- factor(
-  df$Variant,
-  levels = rev(c("splice", "intron", "STR_intronic", "deletion_intron", "duplication_intron"))
+ht <- Heatmap(
+  mat,
+  name = "-log10(p)",
+  col = colorRamp2(c(2,5,10), c("white","pink","red")),
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_row_names = TRUE,
+  width = unit(3, "cm")
 )
 
-# Plot with reordered y-axis
-p <- ggplot(df, aes(x = cell_type, y = Variant, fill = Odds_ratio)) + 
-  geom_tile(color = "black", size = 0.5) +  # Adds thicker black borders to the tiles
-  scale_fill_gradient2(
-    low = "navy", mid = "white", high = "darkred", 
-    midpoint = 1, limits = c(0, 8), na.value = "red4"
-  ) + 
-  labs(x = "Cell Type", y = "Variant", fill = "Odds Ratio") + 
-  theme_minimal() + 
+#--------------------------------------------------------------------------------------
+#Figure 4f
+# Load the data
+data <- read.csv("path")
+
+
+data$line <- factor(data$line, levels = c("Order_of_lines")) # Define custom order of pathway descriptions
+
+
+description_order <- c(
+  "WP_IL18_SIGNALING_PATHWAY",
+  "REACTOME_INTERLEUKIN_4_AND_INTERLEUKIN_13_SIGNALING",
+  "REACTOME_CYTOKINE_SIGNALING_IN_IMMUNE_SYSTEM",
+  "WP_INFLAMMATORY_RESPONSE_PATHWAY",
+  "REACTOME_INTERFERON_GAMMA_SIGNALING",
+  "KEGG_TGF_BETA_SIGNALING_PATHWAY",
+  "REACTOME_SIGNALING_BY_NTRKS",
+  "WP_PI3KAKT_SIGNALING_PATHWAY",
+  "WP_FOCAL_ADHESION_PI3KAKTMTORSIGNALING_PATHWAY",
+  "WP_WNT_SIGNALING",
+  "REACTOME_SIGNALING_BY_WNT",
+  "REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT",
+  "WP_WNT_SIGNALING_WP428",
+  "REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING",
+  "REACTOME_FORMATION_OF_THE_BETA_CATENIN_TCF_TRANSACTIVATING_COMPLEX",
+  "REACTOME_SIGNALING_BY_WNT_IN_CANCER",
+  "WP_HIPPO_SIGNALING_REGULATION_PATHWAYS",
+  "KEGG_HEDGEHOG_SIGNALING_PATHWAY",
+  "WP_GABA_RECEPTOR_SIGNALING",
+  "WP_DNA_REPLICATION",
+  "REACTOME_DNA_REPLICATION",
+  "REACTOME_SYNTHESIS_OF_DNA",
+  "NA"
+)
+
+# Set Description as a factor with the specified order
+data$Description <- factor(data$Description, levels = description_order)
+
+
+library(ggplot2)
+library(RColorBrewer)
+library(scales)
+
+library(tidyr)
+library(dplyr)
+
+# Expand grid to ensure all tile positions exist
+data_full <- expand_grid(
+  line = unique(data$line),
+  Description = unique(data$Description)
+) %>%
+  left_join(data, by = c("line", "Description"))  # join original NES values
+
+# Create the palette function
+myPalette <- colorRampPalette(rev(brewer.pal(11, "Spectral")), space = "Lab")
+
+# Generate a continuous color scale from -3 to 3
+color_scale <- myPalette(100)  # You can increase this for smoother gradients
+
+p <- ggplot(data_full, aes(x = line, y = Description, fill = NES)) +
+  geom_tile(color = "darkgrey", size = 0.5) +  # grey border for all tiles
+  geom_text(aes(label = round(NES, 2)), color = "black", na.rm = TRUE) +
+  scale_fill_gradientn(
+    colors = myPalette(100),
+    limits = c(-3, 3),
+    na.value = "white"
+  ) +
+  labs(
+    title = "Heatmap of NES by Cell Type",
+    x = "Cell Type",
+    y = "Pathway Description",
+    fill = "NES"
+  ) +
+  theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
   )
-#------------------------------------------------------
-
-#Figure 1d
-#input supplementary table S3I as df
-df$Odds_ratio[is.infinite(df$Odds_ratio)] <- NA
 
 
-df$cell_type <- factor(df$cell_type, levels = c("ipsc", "npc"))
-df$Variant <- factor (df$Variant, levels = rev(c("utr5", "utr3", "intron", "upstream", "downstream",
-                                                 "STR_UTR5", "STR_UTR3", "STR_intronic", "STR_upstream", "STR_downstream",
-                                                 "deletion_utr5", "deletion_utr3", "deletion_intron", "deletion_upstream", "deletion_downstream",
-                                                 "duplication_utr5", "duplication_utr3", "duplication_intron","duplication_upstream", "duplication_downstream")))
-
-
-# Plot with dark purple for NA (Inf) values
-p <- ggplot(df, aes(x = cell_type, y = Variant, fill = Odds_ratio)) +
-    geom_tile(color = "black", size = 0.5) +  # Adds thicker black borders to the tiles
-    scale_fill_gradient2(low = "navy", mid = "white", high = "darkred", midpoint = 1, limits = c(0, 12), na.value = "red4") +
-    labs(x = "Cell Type", y = "Variant", fill = "Odds Ratio") +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-
-#Suppfig 1g ans Suppfig 11a
-#similar code, source data is Supplementary Table 3 S3D for suppfig 1g
-#input Supplementary Table 10 S8E as df for suppfig 11a
-
+ggsave("heatmap_NES_new.pdf", plot = p, width = 12, height = 7)
 
 #--------------------------------------------------------------------------------------
-#Figure 4g and figure 6e
+#Figure 4g
+
+
 library(pheatmap)
-pathway_data <- pathway_genes_heatmap_input #supplementary table S5G
-#change the pathway data to TF candidate genes for figure 6e.
+pathway_data <- pathway_genes_heatmap_input #supplementary table S7F
+
 tpm_data <- CRISPRa_all_counts_tpm
 
 
@@ -80,11 +121,8 @@ filtered_tpm <- tpm_data[match(ensembl_ids, rownames(tpm_data)), , drop = FALSE]
 # Convert to matrix
 filtered_tpm_matrix <- as.matrix(filtered_tpm)
 
-# Convert to matrix
-filtered_tpm_matrix <- as.matrix(filtered_tpm)
-
 # Define column groups
-column_groups <- factor(rep(c("npc_111_CRISPRa", "npc_414_CRISPRa", "npc_3110_CRISPRa"), times = c(12, 12, 9)))
+column_groups <- factor(rep(c("npc_P1C_077_CRISPRa", "npc_P1C_007_CRISPRa", "npc_P2C_079_CRISPRa"), times = c(12, 12, 9)))
 
 # Function to normalize by group mean and then scale within each group
 normalize_and_scale <- function(mat, groups) {
@@ -128,9 +166,9 @@ filtered_tpm_z_matrix <- as.matrix(filtered_tpm_z)
 annotation_col <- data.frame(Group = column_groups)
 rownames(annotation_col) <- colnames(filtered_tpm_z_matrix)
 
-# Define the column groups (pre-existing)
-column_groups <- factor(rep(c("npc_111_CRISPRa", "npc_414_CRISPRa", "npc_3110_CRISPRa"), times = c(12, 12, 9)))
-#111 is P1C_077, 414 is P1C_007, 3110 is P2C_079.
+# Define the column groups 
+column_groups <- factor(rep(c("npc_P1C_077_CRISPRa", "npc_P1C_007_CRISPRa", "npc_P2C_079_CRISPRa"), times = c(12, 12, 9)))
+
 
 # Define sample annotations
 sample_annotation <- c(
@@ -148,7 +186,7 @@ rownames(annotation_col) <- colnames(filtered_tpm_z_matrix)
 
 # Define colors for annotations
 annotation_colors <- list(
-    Group = c("npc_111_CRISPRa" = "#E69F00", "npc_414_CRISPRa" = "#56B4E9", "npc_3110_CRISPRa" = "#009E73"),
+    Group = c("npc_P1C_077_CRISPRa" = "#E69F00", "npc_P1C_007_CRISPRa" = "#56B4E9", "npc_P2C_079_CRISPRa" = "#009E73"),
     Treatment = c("EV" = "#F8766D", "mosmo" = "#7CAE00", "uqcrc2" = "#00BFC4", "polr3e" = "#C77CFF")
 )
 
@@ -165,8 +203,40 @@ pheatmap(filtered_tpm_z_matrix, annotation_col = annotation_col,
          color = color_palette,  clustering_method = "ward.D2")
 
 
+
+
+#similar code was also used for Figure 6e, change the input
+
+
+
+#--------------------------------------------------------------------------------------
+#Supplementary Figure 3c
+
+library(ggplot2)
+df <- #input fisher's exact results" #Supplementary table S2E and S2F and S3C
+
+
+df$Odds_ratio[is.infinite(df$Odds_ratio)] <- NA
+
+
+df$Cell_type <- factor(df$Cell_type, levels = c("ipsc", "npc", "imn", "mn"))
+
+
+
+# Plot with dark purple for NA (Inf) values
+p <- ggplot(df, aes(x = Direction, y = Cell_type, fill = Odds_ratio)) +
+    geom_tile(color = "black", size = 0.5) +  # Adds thicker black borders to the tiles
+    scale_fill_gradient2(low = "navy", mid = "white", high = "darkred", midpoint = 1, limits = c(0, 6), na.value = "red4") +
+    labs(x = "Cell Type", y = "Variant", fill = "Odds Ratio") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave("CRISPR_deg_fisher_exact_heatmap.pdf", plot = p, width = 5, height = 5, units = "in")
+
+
+
 #------------------------------------------------
-#supplementary figure 4c
+#supplementary figure 5d
 #input tpm counts for heatmap
 
                 #nkx2-1,          foxg1,              dlx1,             dlx2,                dlx5,            dlx6,             lhx6,               lhx8,              gad2,            sox6
@@ -213,7 +283,6 @@ p <- pheatmap(df,
 
 #family4 is GL_007.
 #controls contains CRISPR control and HD_01 and HD_02
-
 
 
 
