@@ -10,31 +10,29 @@ This repository contains scripts for perform the bioinformatics analyses in the 
 
 Figure_code folder contains scripts to generate plots for the figures in the paper.
 
-generate_heatmap.R for Figure1(c,d), Figure4(g), Figure6(e), Suppfig1(g), Suppfig4(c), Suppfig11(a).
+generate_heatmap.R for Figure1(c), Figure4(f-g), Figure6(e), Suppfig3(c), Suppfig5(d).
 
-generate_dotplot.R for Figure 1(e), Figure 2(b,c), Suppfig 1(e), Suppfig 3(b), Suppfig 8(d) and Suppfig 11 (a)
+generate_dotplot.R for Figure 2(b,d), Figure 3(g), Suppfig 3(a-b,d), Suppfig 4(a-e), Suppfig 7(b) and Suppfig 9(d)
 
-barplot.R for Figure 3, Figure 4, Figure 6, Figure 5, Suppfig 8 and Suppfig 10.
+barplot.R for Figure 3, Figure 4, Figure 6, Suppfig 6, Suppfig 8, Suppfig 9 and Suppfig 11.
 
-volcanoplot.R for Suppfig 1c, Suppfig 2a and Suppfig 7d.
+volcanoplot.R for Suppfig 1(d), Suppfig 2(a), Suppfig 5(c) and Suppfig 8(b).
 
-upsetplot.R for Figure 4 (b).
+upsetplot.R for Figure 4(b).
 
-waterfallplot.R for Figure 4 (g), Suppfig 1 (f) and Suppfig 6(c).
-
-densityplot. R for Figure 5 (b) and Suppfig 9 (a).
+densityplot. R for Figure 5(a) and Suppfig 10(a).
 
 lineplot.py for Suppfig 2(c).
 
-violinplot.R for Figure 3 (a), Suppfig 4(a), Suppfig 5
+violinplot.R for Figure 3, Suppfig 5, Suppfig 6.
 
 # 2_Enrichment_analysis
 
 Scripts for enrichment analysis in the paper.
 
-Enrichment_disgenet.R for Suppfig 1 (e) and Suppfig 3(b).
+Enrichment_disgenet.R for Suppfig 3(b) and Suppfig 4(b).
 
-Enrichment_in_published_datases.R for Suppfig 1 (e) and Suppfig 3(b).
+Enrichment_in_published_datases.R for Suppfig 1(e) and Suppfig 3(b,d).
 
 GSEA.R for gene-set enrichment analysis in the paper. 
 
