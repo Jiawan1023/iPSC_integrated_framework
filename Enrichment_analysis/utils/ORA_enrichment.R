@@ -19,11 +19,12 @@ df_up <- subset(df, sig == 'up')
 df_down <- subset(df, sig == 'down')
 
 diff_up <- df_up 
-
+background_entrez <- bitr(background_list$Gene, fromType="ENSEMBL", toType="ENTREZID", OrgDb=org.Hs.eg.db)
 gene_up.df <- bitr(diff_up$ensembl_gene_id, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = org.Hs.eg.db) #change$SYMBOL based on column name
 gene_up <- gene_up.df$ENTREZID
 
 ego_ALL <- enrichGO(gene = gene_up,
+                    universe = background_entrez$ENTREZID,
                    OrgDb=org.Hs.eg.db,
                    keyType = "ENTREZID",
                    ont = "ALL",
@@ -56,6 +57,7 @@ gene_down <- gene_down.df$ENTREZID
 
 ego_ALL <- enrichGO(gene = gene_down,
                    OrgDb=org.Hs.eg.db,
+                    universe = background_entrez$ENTREZID,
                    keyType = "ENTREZID",
                    ont = "ALL",
                    pAdjustMethod = "BH",
@@ -82,6 +84,7 @@ write.csv(as.data.frame(ego_ALL),
 
 #KEGG
 kk <- enrichKEGG(gene         = gene_up,
+                 universe = background_entrez$ENTREZID,
                  organism     = 'hsa',
                  qvalueCutoff = 0.05)
 head(kk)
@@ -100,6 +103,7 @@ write.csv(as.data.frame(kk),
 
 
 kk <- enrichKEGG(gene         = gene_down,
+                 universe = background_entrez$ENTREZID,
                  organism     = 'hsa',
                  qvalueCutoff = 0.05)
 head(kk)
@@ -117,7 +121,7 @@ write.csv(as.data.frame(kk),
           col.names = TRUE)
 
 #reactome
-pathway.reac <- enrichPathway(gene_up)
+pathway.reac <- enrichPathway(gene_up, universe = background_entrez$ENTREZID)
 
 head(pathway.reac)
 
@@ -134,7 +138,7 @@ write.csv(as.data.frame(pathway.reac),
           col.names = TRUE)
 
 
-pathway.reac <- enrichPathway(gene_down)
+pathway.reac <- enrichPathway(gene_down. universe = background_entrez$ENTREZID)
 
 head(pathway.reac)
 
