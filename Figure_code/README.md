@@ -1,5 +1,5 @@
 Figure_code folder contains scripts to generate plots for the figures in the paper.
-1. generate_heatmap.R for Figure1(c), Figure4(f-g), Figure6(e), Suppfig3(c), Suppfig5(d), Suppfig7(a).
+1. generate_heatmap.R for Figure1(c), Figure4(f-g), Figure6(e), Suppfig3(c), Suppfig5(d).
 2. generate_dotplot.R for Figure 1(e), Figure 2(b,c), Suppfig 1(e), Suppfig 3(b), Suppfig 8(d) and Suppfig 11 (a)
 3. barplot.R for Figure 3, Figure 4, Figure 6, Figure 5, Suppfig 8 and Suppfig 10.
 4. volcanoplot.R for Suppfig 1c, Suppfig 2a and Suppfig 7d.
