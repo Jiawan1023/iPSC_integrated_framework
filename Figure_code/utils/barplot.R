@@ -80,6 +80,7 @@ df_summary <- df %>%
     mean_value = mean(positive_cells, na.rm = TRUE),
     sd = sd(positive_cells, na.rm = TRUE),
     .groups = "drop"
+    se = sd(positive_cells, na.rm = TRUE) / sqrt(n())
   )
 
 # Ensure the summary has the same factor levels
@@ -99,7 +100,7 @@ p <- ggplot() +
   ) +
   geom_errorbar(
     data = df_summary,
-    aes(x = group, ymin = mean_value - sd, ymax = mean_value + sd, group = chase_hours),
+    aes(x = group, ymin = mean_value - se, ymax = mean_value + se, group = chase_hours),
     position = position_dodge(width = 0.8),
     width = 0.2
   ) +
